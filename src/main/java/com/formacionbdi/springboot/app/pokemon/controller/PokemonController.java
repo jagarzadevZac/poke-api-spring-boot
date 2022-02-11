@@ -109,6 +109,19 @@ public class PokemonController {
  	    return response;
 	}
 	
-	
+	@GetMapping("/base-experience/{name}")
+	public Integer getPokemonBaseExperinece(@PathVariable("name") String name) {
+		HttpHeaders header = new HttpHeaders();
+		header.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+		header.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+		HttpEntity<String> entity = new HttpEntity<String>("parameters",header);
+		
+		ResponseEntity<String> response = restTemplate.exchange(urlApiPokemon+"pokemon/"+name, HttpMethod.GET, entity, String.class);
+		
+		JSONObject json = new JSONObject(response.getBody());
+		int baseExperinecePokemon =  json.getInt("base_experience");
+		
+	    return baseExperinecePokemon;
+	}
 	
 }

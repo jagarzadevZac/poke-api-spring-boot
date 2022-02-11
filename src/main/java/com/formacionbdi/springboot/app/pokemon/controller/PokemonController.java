@@ -64,9 +64,16 @@ public class PokemonController {
 	
 	@GetMapping("/abilities/{id}")
 	public Object getPokemonAbility(@PathVariable("id") String id){
+		HttpHeaders header = new HttpHeaders();
+		header.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+		header.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+		HttpEntity<String> entity = new HttpEntity<String>("parameters",header);
+		
 		int idPokemon = Integer.parseInt(id);
-		Object  pokemonAbility = restTemplate.getForObject(urlApiPokemon+"ability/"+idPokemon,Object.class);
-		return pokemonAbility;
+
+		ResponseEntity<Object> response = restTemplate.exchange(urlApiPokemon+"ability/"+idPokemon, HttpMethod.GET, entity, Object.class);
+		
+		return response;
 	}
 	
 	@GetMapping("/held-items/{name}")
@@ -74,6 +81,7 @@ public class PokemonController {
 		
 		HttpHeaders header = new HttpHeaders();
 		header.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+		header.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
 		HttpEntity<String> entity = new HttpEntity<String>("parameters",header);
 		
 		ResponseEntity<String> response = restTemplate.exchange(urlApiPokemon+"pokemon/"+name, HttpMethod.GET, entity, String.class);
@@ -90,27 +98,15 @@ public class PokemonController {
 	
 	
 	@GetMapping("/location-area-encounters/{name}")
-	public String getPokemonocationAreaEncounters(@PathVariable("name") String name){
-
-		String response = restTemplate.getForObject(urlApiPokemon+"pokemon/"+name+"/encounters",  String.class);
+	public Object getPokemonocationAreaEncounters(@PathVariable("name") String name){
+		HttpHeaders header = new HttpHeaders();
+		header.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+		header.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+		HttpEntity<String> entity = new HttpEntity<String>("parameters",header);
 		
-		JSONArray locations = new JSONArray(response);
-		String listLoaction = "";
-		String separador =", ";
+		ResponseEntity<Object> response = restTemplate.exchange(urlApiPokemon+"pokemon/"+name+"/encounters", HttpMethod.GET, entity, Object.class);
 		
-		for (int i = 0; i < locations.length(); i++) {
-			JSONObject location = locations.getJSONObject(i);
-			JSONObject locationData = location.getJSONObject("location_area");
-			if(i == locations.length()-2) {
-				separador = "- ";
-			}else if(i == locations.length()-1){
-				separador = " ";
-			}
-			
-			listLoaction += locationData.getString("name") + separador;
-		}
-		
- 	    return listLoaction;
+ 	    return response;
 	}
 	
 	
